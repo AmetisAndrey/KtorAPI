@@ -1,1 +1,1 @@
-rootProject.name = "ktogir-task-api"
+rootProject.name = "ktor-task-api"

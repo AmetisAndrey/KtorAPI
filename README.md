@@ -27,6 +27,7 @@
 ```bash
 # Получить все задачи
 curl http://localhost:8080/tasks
+![Image_1]](image.png)
 
 # Фильтр + лимит
 curl "http://localhost:8080/tasks?completed=false&limit=5"
