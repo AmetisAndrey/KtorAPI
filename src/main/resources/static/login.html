@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Task API</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+<button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Сменить тему">
+    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+</button>
+
+<div class="auth-card">
+    <h1>Task API</h1>
+    <div class="subtitle">Войдите или создайте аккаунт</div>
+
+    <div class="tabs">
+        <button id="tabLogin" class="active" onclick="switchTab('login')" type="button">Вход</button>
+        <button id="tabRegister" onclick="switchTab('register')" type="button">Регистрация</button>
+    </div>
+
+    <form id="authForm" onsubmit="submitForm(event)">
+        <label for="login">Логин</label>
+        <input id="login" name="login" placeholder="например, ametis"
+               autocomplete="username" required>
+
+        <div class="login-preview" id="loginPreview" hidden>
+            <span class="avatar sm" id="loginAvatar"></span>
+            <span class="login-preview-text">Будете входить как <strong id="loginPreviewName"></strong></span>
+        </div>
+
+        <label for="password">Пароль</label>
+        <div class="input-with-icon">
+            <input id="password" name="password" type="password" placeholder="минимум 6 символов"
+                   autocomplete="current-password" minlength="6" required>
+            <button type="button" class="toggle-password" onclick="togglePassword()" title="Показать пароль">
+                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+        </div>
+
+        <button class="primary" type="submit" id="submitBtn">Войти</button>
+    </form>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script src="/js/shared.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>
