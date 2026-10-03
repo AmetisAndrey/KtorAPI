@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="image.png" alt="Task API" width="880">
-</p>
-
 <h1 align="center">Task API</h1>
 
 <p align="center">
