@@ -1,9 +1,26 @@
-# Ktor Task API
+<p align="center">
+  <img src="image.png" alt="Task API" width="880">
+</p>
 
-Backend-приложение на Kotlin/Ktor: CRUD для сущности «Задача» + регистрация, вход и JWT-аутентификация. Есть веб-интерфейс (дашборд с графиками, поиском, сортировкой, пагинацией, экспортом CSV/JSON и переключением тем).
+<h1 align="center">Task API</h1>
+
+<p align="center">
+  CRUD + JWT-аутентификация на Kotlin/Ktor с веб-дашбордом
+</p>
+
+<p align="center">
+  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-1.9.22-7F52FF?logo=kotlin&logoColor=white">
+  <img alt="Ktor" src="https://img.shields.io/badge/Ktor-2.3.12-087CFA?logo=ktor&logoColor=white">
+  <img alt="JDK" src="https://img.shields.io/badge/JDK-17+-orange">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
+
+---
 
 ## Содержание
 
+- [Возможности](#возможности)
+- [Скриншоты](#скриншоты)
 - [Стек](#стек)
 - [Требования](#требования)
 - [Запуск](#запуск)
@@ -25,22 +42,55 @@ Backend-приложение на Kotlin/Ktor: CRUD для сущности «З
 
 ---
 
+## Возможности
+
+- **CRUD** для сущности «Задача»: список, получение по id, создание, обновление, удаление.
+- **JWT-аутентификация**: регистрация, вход, защищённые маршруты, полезные claims (`userId`, `login`).
+- **BCrypt** для хранения паролей (cost = 12).
+- **JSON** через `ContentNegotiation` + `kotlinx.serialization`.
+- **Query и path параметры**: `?completed=`, `?limit=`, `/tasks/{id}`.
+- **Корректные HTTP-коды**: 200, 201, 204, 400, 401, 404, 409, 500.
+- **Веб-дашборд**: графики (Chart.js), метрики, поиск, фильтр, сортировка, пагинация, тёмная/светлая тема, экспорт CSV/JSON.
+
+## Скриншоты
+
+### Страница входа
+
+<p align="center">
+  <img src="docs/screenshots/login.png" alt="Страница входа" width="440">
+</p>
+
+### Дашборд — светлая тема
+
+<p align="center">
+  <img src="docs/screenshots/dashboard_light.png" alt="Дашборд, светлая тема" width="880">
+</p>
+
+### Дашборд — тёмная тема
+
+<p align="center">
+  <img src="docs/screenshots/dashboard_black.png" alt="Дашборд, тёмная тема" width="880">
+</p>
+
+---
+
 ## Стек
 
-- **Kotlin 1.9.22** + **Ktor 2.3.12** (Netty)
-- **kotlinx.serialization** + `ContentNegotiation` (JSON)
-- **JWT** (`ktor-server-auth-jwt`, HMAC256)
-- **BCrypt** (`at.favre.lib:bcrypt`, cost 12)
-- **Gradle 8+** (проект проверен на Gradle 8.14 и 9.5)
-- **JDK 17+**
+- **Kotlin** 1.9.22
+- **Ktor** 2.3.12 (Netty, `ContentNegotiation`, `Authentication`/JWT, `StatusPages`, `CallLogging`)
+- **kotlinx.serialization** — JSON
+- **BCrypt** (`at.favre.lib:bcrypt`) — хэширование паролей
+- **Chart.js** — графики на дашборде
+- **Gradle** 8+ (проект проверен на Gradle 9.5)
+- **JDK** 17+
 
 ## Требования
 
 - JDK 17 или новее
 - Git
-- Не требуются: Docker, Postgres, внешняя БД — данные хранятся в памяти.
+- Внешние БД не нужны — данные хранятся в памяти
 
-Проверить версию JDK:
+Проверка версии JDK:
 
 ```bash
 java -version
@@ -60,21 +110,15 @@ java -version
 ./gradlew run
 ```
 
-После старта в консоли появится:
+После старта:
 
 ```
 INFO  Application - Responding at http://0.0.0.0:8080
 ```
 
-Сервер доступен по адресу: **http://localhost:8080**
+Сервер доступен по адресу **http://localhost:8080**.
 
-### Первый запуск
-
-Первый запуск скачивает зависимости (Ktor, Netty, BCrypt и т.д.) — может занять 1–3 минуты. Последующие запуски быстрые.
-
-### Остановка
-
-`Ctrl + C` в окне терминала, где запущен Gradle.
+Первый запуск скачивает зависимости (1–3 минуты), последующие — быстрые. Остановка: `Ctrl + C`.
 
 ## Структура проекта
 
@@ -84,21 +128,27 @@ ktor/
 ├── settings.gradle.kts
 ├── gradle.properties
 ├── README.md
+├── image.png
+├── docs/
+│   └── screenshots/
+│       ├── login.png
+│       ├── dashboard_light.png
+│       └── dashboard_black.png
 └── src/main/
     ├── kotlin/com/example/
     │   ├── Application.kt          # точка входа, плагины, маршрутизация
     │   ├── models/
-    │   │   ├── Task.kt             # Task, CreateTaskRequest, UpdateTaskRequest, ErrorResponse
-    │   │   └── User.kt             # User, UserDto, RegisterRequest, LoginRequest, AuthResponse
+    │   │   ├── Task.kt             # Task, DTO, ErrorResponse
+    │   │   └── User.kt             # User, DTO, запросы и ответы auth
     │   ├── repositories/
-    │   │   ├── TaskRepository.kt   # in-memory хранилище задач
-    │   │   └── UserRepository.kt   # in-memory хранилище пользователей
+    │   │   ├── TaskRepository.kt
+    │   │   └── UserRepository.kt
     │   ├── security/
-    │   │   ├── JwtConfig.kt        # секрет, issuer, audience, claim-имена
-    │   │   └── PasswordHasher.kt   # BCrypt hash/verify
+    │   │   ├── JwtConfig.kt
+    │   │   └── PasswordHasher.kt
     │   └── routes/
     │       ├── AuthRouter.kt       # /auth/register, /auth/login
-    │       └── TaskRouter.kt       # CRUD /tasks
+    │       └── TaskRouter.kt       # /tasks CRUD
     └── resources/
         ├── logback.xml
         └── static/
@@ -116,13 +166,15 @@ ktor/
 
 ## Аутентификация
 
-- **Регистрация**: `POST /auth/register` — принимает `login` и `password`, пароль хэшируется BCrypt.
-- **Вход**: `POST /auth/login` — проверяет пароль сверкой с хэшем и возвращает JWT.
-- **Токен** содержит claims `userId` и `login`, issuer `ktor-task-api`, audience `ktor-task-api-users`, срок жизни 1 час.
+- **Регистрация** — `POST /auth/register`, пароль хэшируется BCrypt.
+- **Вход** — `POST /auth/login`, проверка пароля через `BCrypt.verifyer()`, при успехе выдаётся JWT.
+- **Токен** содержит claims `userId`, `login`, `iss`, `aud`, `iat`, `exp`; срок жизни — 1 час.
 - **Защищённые маршруты** требуют заголовок:
+
   ```
   Authorization: Bearer <TOKEN>
   ```
+
 - **Публичные маршруты**: `GET /tasks`, `GET /tasks/{id}`, `POST /auth/register`, `POST /auth/login`, `GET /api/health`.
 
 Получить токен:
@@ -161,19 +213,13 @@ curl -s -X POST http://localhost:8080/auth/login \
 { "id": 1, "login": "ametis" }
 ```
 
-**Ошибки**
-- `400 Bad Request` — пустой логин/пароль или пароль короче 6 символов
-- `409 Conflict` — логин уже занят
-
-**curl**
+**Ошибки**: `400` (пустые поля, короткий пароль), `409` (логин занят).
 
 ```bash
 curl -i -X POST http://localhost:8080/auth/register \
   -H "Content-Type: application/json" \
   -d '{"login":"ametis","password":"secret123"}'
 ```
-
-**PowerShell**
 
 ```powershell
 Invoke-RestMethod -Uri http://localhost:8080/auth/register -Method Post `
@@ -203,11 +249,7 @@ Invoke-RestMethod -Uri http://localhost:8080/auth/register -Method Post `
 }
 ```
 
-**Ошибки**
-- `400 Bad Request` — некорректный JSON
-- `401 Unauthorized` — неверный логин или пароль
-
-**curl**
+**Ошибки**: `400` (некорректный JSON), `401` (неверные данные).
 
 ```bash
 curl -i -X POST http://localhost:8080/auth/login \
@@ -215,26 +257,23 @@ curl -i -X POST http://localhost:8080/auth/login \
   -d '{"login":"ametis","password":"secret123"}'
 ```
 
-**PowerShell** — сохраняем токен в переменную
-
 ```powershell
 $resp = Invoke-RestMethod -Uri http://localhost:8080/auth/login -Method Post `
   -ContentType "application/json" `
   -Body '{"login":"ametis","password":"secret123"}'
 
-$token = $resp.token
-$h = @{ Authorization = "Bearer $token" }
+$h = @{ Authorization = "Bearer $($resp.token)" }
 ```
 
 ---
 
 ### GET /tasks
 
-Публичный. Список задач. Поддерживает query-параметры.
+Публичный. Список задач.
 
 **Query-параметры**
-- `completed` — `true` / `false` (фильтр по статусу)
-- `limit` — положительное целое (ограничение количества)
+- `completed` — `true` / `false`
+- `limit` — положительное число
 
 **Успех** — `200 OK`
 
@@ -245,20 +284,12 @@ $h = @{ Authorization = "Bearer $token" }
 ]
 ```
 
-**Ошибки**
-- `400 Bad Request` — некорректный `completed` или `limit`
-
-**curl**
+**Ошибки**: `400` (некорректные query-параметры).
 
 ```bash
-# Все задачи
 curl http://localhost:8080/tasks
-
-# Только невыполненные, не более 5
 curl "http://localhost:8080/tasks?completed=false&limit=5"
 ```
-
-**PowerShell**
 
 ```powershell
 Invoke-RestMethod http://localhost:8080/tasks
@@ -271,25 +302,13 @@ Invoke-RestMethod "http://localhost:8080/tasks?completed=false&limit=5"
 
 Публичный. Одна задача по id.
 
-**Путь**: `id` — целое число.
-
 **Успех** — `200 OK`
 
-```json
-{ "id": 1, "title": "Изучить Ktor", "description": "Пройти туториал", "completed": false, "ownerId": 1 }
-```
-
-**Ошибки**
-- `400 Bad Request` — `id` не число
-- `404 Not Found` — задача не найдена
-
-**curl**
+**Ошибки**: `400` (`id` не число), `404` (не найдено).
 
 ```bash
 curl -i http://localhost:8080/tasks/1
 ```
-
-**PowerShell**
 
 ```powershell
 Invoke-RestMethod http://localhost:8080/tasks/1
@@ -299,7 +318,7 @@ Invoke-RestMethod http://localhost:8080/tasks/1
 
 ### POST /tasks
 
-**Требует JWT** в заголовке `Authorization: Bearer <TOKEN>`.
+**Требует JWT** (`Authorization: Bearer <TOKEN>`).
 
 **Тело запроса** (DTO без `id`)
 
@@ -307,19 +326,13 @@ Invoke-RestMethod http://localhost:8080/tasks/1
 { "title": "Купить молоко", "description": "2 литра", "completed": false }
 ```
 
-`description` и `completed` опциональны.
-
 **Успех** — `201 Created`
 
 ```json
 { "id": 3, "title": "Купить молоко", "description": "2 литра", "completed": false, "ownerId": 1 }
 ```
 
-**Ошибки**
-- `400 Bad Request` — пустой `title` или некорректный JSON
-- `401 Unauthorized` — нет или невалидный JWT
-
-**curl**
+**Ошибки**: `400`, `401`.
 
 ```bash
 curl -i -X POST http://localhost:8080/tasks \
@@ -327,8 +340,6 @@ curl -i -X POST http://localhost:8080/tasks \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"title":"Купить молоко","description":"2 литра"}'
 ```
-
-**PowerShell**
 
 ```powershell
 Invoke-RestMethod -Uri http://localhost:8080/tasks -Method Post -Headers $h `
@@ -342,44 +353,22 @@ Invoke-RestMethod -Uri http://localhost:8080/tasks -Method Post -Headers $h `
 
 **Требует JWT**.
 
-**Путь**: `id` — целое число.
-
-**Тело запроса** (DTO обновления; любое поле можно опустить)
+**Тело запроса** (любое поле опционально)
 
 ```json
 { "completed": true }
 ```
 
-Возможные поля: `title`, `description`, `completed`.
+**Успех** — `200 OK`.
 
-**Успех** — `200 OK`
-
-```json
-{ "id": 1, "title": "Изучить Ktor", "description": "Пройти туториал", "completed": true, "ownerId": 1 }
-```
-
-**Ошибки**
-- `400 Bad Request` — некорректный JSON или `id`
-- `401 Unauthorized` — нет или невалидный JWT
-- `404 Not Found` — задача не найдена
-
-**curl**
+**Ошибки**: `400`, `401`, `404`.
 
 ```bash
-# Отметить выполненной
 curl -i -X PUT http://localhost:8080/tasks/1 \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"completed":true}'
-
-# Изменить описание
-curl -i -X PUT http://localhost:8080/tasks/1 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"description":"Новое описание"}'
 ```
-
-**PowerShell**
 
 ```powershell
 Invoke-RestMethod -Uri http://localhost:8080/tasks/1 -Method Put -Headers $h `
@@ -393,23 +382,14 @@ Invoke-RestMethod -Uri http://localhost:8080/tasks/1 -Method Put -Headers $h `
 
 **Требует JWT**.
 
-**Путь**: `id` — целое число.
+**Успех** — `204 No Content`.
 
-**Успех** — `204 No Content` (тело пустое)
-
-**Ошибки**
-- `400 Bad Request` — некорректный `id`
-- `401 Unauthorized` — нет или невалидный JWT
-- `404 Not Found` — задача не найдена
-
-**curl**
+**Ошибки**: `400`, `401`, `404`.
 
 ```bash
 curl -i -X DELETE http://localhost:8080/tasks/1 \
   -H "Authorization: Bearer $TOKEN"
 ```
-
-**PowerShell**
 
 ```powershell
 (Invoke-WebRequest -Uri http://localhost:8080/tasks/1 -Method Delete -Headers $h).StatusCode
@@ -421,13 +401,9 @@ curl -i -X DELETE http://localhost:8080/tasks/1 \
 
 Публичный health-check.
 
-**Успех** — `200 OK`
-
 ```json
 { "status": "ok" }
 ```
-
-**curl**
 
 ```bash
 curl http://localhost:8080/api/health
@@ -439,7 +415,7 @@ curl http://localhost:8080/api/health
 
 | Код | Когда возвращается |
 |-----|--------------------|
-| 200 | Успешный GET / PUT / POST /auth/login |
+| 200 | Успешный GET / PUT / POST `/auth/login` |
 | 201 | Задача создана / пользователь зарегистрирован |
 | 204 | Задача удалена |
 | 400 | Некорректный JSON, пустые обязательные поля, неверные query-параметры или `id` |
@@ -448,27 +424,23 @@ curl http://localhost:8080/api/health
 | 409 | Логин уже занят |
 | 500 | Внутренняя ошибка сервера |
 
-Все ответы — в формате JSON, кроме `204 No Content`.
-
 Формат ошибки:
 
 ```json
 { "error": "Описание ошибки", "code": 400 }
 ```
 
----
-
 ## Веб-интерфейс
 
-После запуска сервера откройте в браузере:
+После запуска сервера:
 
-- **http://localhost:8080/** — редирект на дашборд, без токена → на страницу входа.
-- **http://localhost:8080/login.html** — вход / регистрация.
-- **http://localhost:8080/dashboard.html** — дашборд.
+- **http://localhost:8080/** — редирект на дашборд (без токена — на страницу входа)
+- **http://localhost:8080/login.html** — вход / регистрация
+- **http://localhost:8080/dashboard.html** — дашборд
 
 Возможности дашборда:
 
-- метрики: всего задач, выполнено, в работе, процент;
+- метрики: всего, выполнено, в работе, процент;
 - три графика (Chart.js): статус, длина названий, динамика по id;
 - создание задачи с названием и описанием;
 - переключение статуса «Выполнено / Вернуть»;
@@ -476,29 +448,23 @@ curl http://localhost:8080/api/health
 - удаление с подтверждением;
 - поиск по названию/описанию;
 - фильтр по статусу;
-- сортировка по клику на заголовок столбца (id / название / описание / статус);
-- пагинация с настройкой размера страницы (5 / 10 / 25 / 50 / Все);
-- экспорт текущего отфильтрованного списка в **CSV** и **JSON**;
+- сортировка по клику на заголовок столбца;
+- пагинация (5 / 10 / 25 / 50 / Все);
+- экспорт текущего списка в **CSV** и **JSON**;
 - светлая/тёмная тема с сохранением выбора;
-- автообновление данных каждые 5 секунд;
-- JWT хранится в `localStorage`, при истечении — автоматический выход на страницу входа.
-
----
+- автообновление каждые 5 секунд;
+- JWT хранится в `localStorage`, при истечении — автоматический выход.
 
 ## Безопасность
 
-- **Пароли** хранятся только в виде BCrypt-хэшей (`at.favre.lib:bcrypt`, cost = 12).
-- **Проверка пароля** при входе — через `BCrypt.verifyer().verify(...)`, а не сравнение строк.
-- **JWT** подписан HMAC256; секрет задаётся в `security/JwtConfig.kt` (для продакшена заменить на значение из переменной окружения).
-- Токен содержит полезные claims: `userId`, `login`, а также `iss`, `aud`, `iat`, `exp`.
-- **Защищённые маршруты** (`POST/PUT/DELETE /tasks`) требуют валидный токен; без него или при его недействительности возвращается `401 Unauthorized`.
-- Пароль никогда не возвращается клиенту: в ответе `/auth/login` передаётся только `UserDto(id, login)`.
-
----
+- Пароли хранятся только в виде **BCrypt-хэшей** (cost = 12).
+- Проверка пароля — через `BCrypt.verifyer().verify(...)`, не сравнение строк.
+- **JWT** подписан HMAC256; секрет — в `security/JwtConfig.kt` (для продакшена вынести в переменную окружения).
+- Токен содержит `userId`, `login`, `iss`, `aud`, `iat`, `exp`.
+- Защищённые маршруты возвращают `401` без валидного токена.
+- Пароль никогда не возвращается клиенту — в ответе только `UserDto(id, login)`.
 
 ## Тестирование через PowerShell
-
-Готовый сценарий — от регистрации до удаления.
 
 ```powershell
 # 1. Регистрация
@@ -529,11 +495,17 @@ Invoke-RestMethod -Uri http://localhost:8080/tasks/1 -Method Put -Headers $h `
 # 6. Удаление — проверяем 204
 (Invoke-WebRequest -Uri http://localhost:8080/tasks/1 -Method Delete -Headers $h).StatusCode
 
-# 7. Проверка защиты: 401 без токена
+# 7. Проверка защиты: без токена должно быть 401
 try {
   Invoke-RestMethod -Uri http://localhost:8080/tasks -Method Post `
     -ContentType "application/json" -Body '{"title":"Без токена"}'
 } catch {
-  $_.Exception.Response.StatusCode.value__   # должно быть 401
+  $_.Exception.Response.StatusCode.value__
 }
 ```
+
+---
+
+<p align="center">
+  <sub>Учебный проект · Kotlin / Ktor · 2026</sub>
+</p>
